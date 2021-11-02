@@ -1,0 +1,127 @@
+basePath: '/api-docs'
+tags:
+- name: auth
+  description: Authentication routes
+
+/login:
+  post:
+    summary: Validates user credentials.
+    description: Validates user credentials and returns a pair of authentication and refresh tokens.
+    tags:
+    - auth
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema: 
+            type: object
+            properties:
+              username:
+                type: string
+              email:
+                type: string
+              password:
+                type: string
+
+    responses:
+      '200':
+        description:  |
+          ### Success
+          Returns a boolean and pair of refresh and authentication tokens.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                authentication_token:
+                  type: string
+                  format: jwt
+                  example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c'
+                refresh_token:
+                  type: string
+                  format: jwt
+                  example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c'
+      '412':
+        description: |
+          ### Validation error 
+          
+          Returns a boolean, a error message and a json object containing the field names associated to a list of their respective validation errors.
+
+
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: "Validation failed"
+                errors:
+                  type: object
+                  properties:
+                    password:
+                      type: array
+                      items:
+                        type: string
+                        example: "The password field is required."
+
+              
+/refresh:
+  post:
+    summary: Validates a refresh token.
+    description: Validates a refresh token and returns a new authentication token.
+    tags:
+    - auth
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema: 
+            type: object
+            properties:
+              refresh_token:
+                type: string
+                format: jwt
+              
+    responses:
+      '200':
+        description: |
+          ### Success
+          Returns a pair of refresh and authentication tokens.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                authentication_token:
+                  type: string
+                  format: jwt
+                  example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c'
+                refresh_token:
+                  type: string
+                  format: jwt
+                  example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c'
+      '401':
+        description: |
+          ### Unauthorized 
+          Failed to validate the token.
+          Returns a json object containing a boolean value and a error message
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                error:
+                  type: string
+                  example: "Failed to authenticate token."
+
+                  
