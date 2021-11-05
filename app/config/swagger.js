@@ -5,7 +5,7 @@ const swaggerDefinitions = {
     host: process.env.HOST || 'localhost:8080',
     basePath: '/api-docs',
     info: {
-        title: "AuRos authentication server",
+        title: "Planalto API docs",
         version: '1.0.0'
     }
 }

@@ -8,7 +8,7 @@ export const db = new Sequelize(
     config.PASSWORD,
     {
         host: config.HOST,
-        dialect: 'mysql'
+        dialect: 'postgresql'
     }
 );
 

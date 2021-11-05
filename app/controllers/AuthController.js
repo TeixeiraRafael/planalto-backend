@@ -40,7 +40,7 @@ export const login = (req, res) => {
         })
         .catch((error) => {
             console.log(error);
-            res.staus(501).send({
+            res.status(501).send({
                 success: false,
                 message: "Failed logging in!"
             });

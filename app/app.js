@@ -14,6 +14,7 @@ const app = express();
 app.use(cors());
 
 const PORT = process.env.PORT || 5000
+const HOST = process.env.HOST || 'localhost'
 
 db.authenticate()
     .then(() => {
@@ -29,6 +30,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(routes);
 
-app.listen(PORT, () => {
+app.listen(PORT, HOST, () => {
     console.log(`Server running on port ${PORT}.`);
 });
