@@ -10,6 +10,10 @@ export const User = db.define('User',
             autoIncrement: true,
             primaryKey: true,
         },
+        role_id: {
+            type: DataTypes.BIGINT,
+            allowNull: true
+        },
         name: {
             type: DataTypes.STRING(500),
             allowNull: false,
