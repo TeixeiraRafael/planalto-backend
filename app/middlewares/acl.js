@@ -1,5 +1,16 @@
 import jwt from 'jsonwebtoken';
+import sequelize from 'sequelize';
 import { User, Role } from '../models/index.js';
+
+var notDeletedById = {
+    where: {
+        id: null,
+        deleted_at: null
+    },
+    include: {
+        model: Role
+    }
+};
 
 const loggedIn = (req, res, next) => {
     if (req.body.access_token) {
@@ -22,12 +33,8 @@ const loggedIn = (req, res, next) => {
 }
 
 const basicUser = (req, res, next) =>{
-    var user = User.findOne({
-        id: req.user_id,
-        include: {
-            model: Role
-        }
-    })
+    notDeletedById.where.id = req.user_id
+    var user = User.findOne(notDeletedById)
     .then((user) => {
         var id = user.Role.id
         if(id == 1 || id == 2 || id == 3){
@@ -38,17 +45,14 @@ const basicUser = (req, res, next) =>{
         return false;
     })
     .catch((err) => {
-        console.error(err);
+        internalServerError(res);
+        return false;
     });    
 }
 
 const managerUser = (req, res, next) => {
-    var user = User.findOne({
-        id: req.user_id,
-        include: {
-            model: Role
-        }
-    })
+    notDeletedById.where.id = req.user_id
+    var user = User.findOne(notDeletedById)
     .then((user) => {
         var id = user.Role.id
         if(id == 2 || id == 3){
@@ -59,17 +63,14 @@ const managerUser = (req, res, next) => {
         return false;
     })
     .catch((err) => {
-        console.error(err);
+        internalServerError(res);
+        return false;
     });  
 }
 
 const rootUser = (req, res, next) => {
-    var user = User.findOne({
-        id: req.user_id,
-        include: {
-            model: Role
-        }
-    })
+    notDeletedById.where.id = req.user_id
+    var user = User.findOne(notDeletedById)
     .then((user) => {
         var id = user.Role.id
         if(id == 3){
@@ -80,26 +81,17 @@ const rootUser = (req, res, next) => {
         return false;
     })
     .catch((err) => {
-        console.error(err);
+        internalServerError(res);
+        return false;
     });  
 }
 
-const permissionError = (res) => {
-    res.status(401).send({
-        success: false,
-        message: "You do not have permission to perform such action"
-    })
-}
-
-const validateRequiredLevel = (req, res, next, level) => {
-    var user = User.findOne({
-        id: req.user_id,
-        include: {
-            model: Role
-        }
-    })
+const selfOrRoot = (req, res, next) => {
+    notDeletedById.where.id = req.user_id
+    var user = User.findOne(notDeletedById)
     .then((user) => {
-        if(user.Role.id == level){
+        var id = user.Role.id
+        if(id == 3 || req.user_id == req.params.id){
             next();
             return true;
         }
@@ -107,13 +99,62 @@ const validateRequiredLevel = (req, res, next, level) => {
         return false;
     })
     .catch((err) => {
-        console.error(err);
+        handleError(err, res);
+        return false;
     });
 }
 
+const selfOrManager = (req, res, next) => {
+    notDeletedById.where.id = req.user_id
+    var user = User.findOne(notDeletedById)
+    .then((user) => {
+        var id = user.Role.id
+        if(id== 3 || id == 2 || req.user_id == req.params.id){
+            next();
+            return true;
+        }
+        permissionError(res);
+        return false;
+    })
+    .catch((err) => {
+        handleError(err, res);
+        return false;
+    });
+}
+
+const handleError = (err, res) => {
+    if( err instanceof sequelize.EmptyResultError){
+        deletedUser(res);
+        return false;
+    }
+    internalServerError(res);
+    return false;
+}
+const permissionError = (res) => {
+    res.status(403).send({
+        success: false,
+        message: "You do not have permission to perform such action"
+    })
+}
+
+const deletedUser = (res) => {
+    res.status(403).send({
+        success: false,
+        message: "The requesting user has been deleted"
+    })
+}
+
+const internalServerError = (res) => {
+    res.status(500).send({
+        success: false,
+        message: "Internal Server Error."
+    })
+}
 export const acl = {
     loggedIn,
     basicUser,
     managerUser,
-    rootUser
+    rootUser,
+    selfOrRoot,
+    selfOrManager
 }

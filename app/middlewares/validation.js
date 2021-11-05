@@ -1,8 +1,9 @@
-import { registerValidator } from "./validators/user.js"
+import { registerValidator, userUpdateValidator } from "./validators/user.js"
 import { loginValidator, refreshValidator} from "./validators/auth.js"
 
 export const user = {
-    registerValidator
+    registerValidator,
+    userUpdateValidator
 }
 
 export const auth = {

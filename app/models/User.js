@@ -43,7 +43,8 @@ export const User = db.define('User',
     },
     {
         tableName: 'users',
-        timestamps: false
+        timestamps: false,
+        rejectOnEmpty: true
     }
 );
 
