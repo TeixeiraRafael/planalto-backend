@@ -1,6 +1,6 @@
 import  bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { User } from '../models/User.js';
+import { User, Role } from '../models/index.js';
 
 export const createUser = (req, res) => {
     var hash_password = bcrypt.hashSync(req.body.password, 10);
@@ -13,6 +13,7 @@ export const createUser = (req, res) => {
     newUser.save()
     .then((user) => {
         user.password = undefined;
+        user.deleted_at = undefined;
         res.send(user);
     })
     .catch((err) => {
@@ -29,4 +30,29 @@ export const createUser = (req, res) => {
     })
 }
 
+export const getUser = (req, res) => {
+    var user = User.findOne({
+        id: req.user_id,
+        include: {
+            model: Role
+        }
+    })
+    .then((user) => {
+        user.password = undefined
+        user.created_at = undefined
+        user.updated_at = undefined
+
+        res.status(200).send({
+            success: true,
+            user
+        })
+        return;
+    })
+    .catch((err) => {
+        res.status(500).send({
+            success: false,
+            message: "Server error"
+        })
+    })
+}
 export default createUser;
