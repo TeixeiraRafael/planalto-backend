@@ -8,8 +8,8 @@ export const userRoutes = express.Router();
 
 userRoutes.post("/register", user.registerValidator, createUser);
 
-userRoutes.get("/user/:id", acl.loggedIn, acl.selfOrManager, getUser);
-userRoutes.get("/user", acl.loggedIn, acl.managerUser, getAll);
+userRoutes.post("/user/:id", acl.loggedIn, acl.selfOrManager, getUser);
+userRoutes.post("/user", acl.loggedIn, acl.managerUser, getAll);
 
 userRoutes.put("/user/:id", acl.loggedIn, acl.selfOrRoot, user.userUpdateValidator, updateUser);
 
