@@ -83,20 +83,16 @@ tags:
 
               
 /user:
-  post:
+  get:
     summary: Retrieves a list of all the users
     description: The user making the request must have manager or root privileges.
     tags:
     - user
-    requestBody:
-      required: true
-      content:
-        application/json:
-          schema: 
-            type: object
-            properties:
-              access_token:
-                type: string
+    parameters:
+      - in: query
+        name: access_token
+        schema:
+          type: string
     
     responses:
       '200':
@@ -150,20 +146,16 @@ tags:
                   example: "You do not have permission to perform such action"
 
 /user/{id}:
-  post:
+  get:
     summary: Retrievies a single user's information
     description: Basic users can only request their own information. Managers can request information from any other users.
     tags:
     - user
-    requestBody:
-      required: true
-      content:
-        application/json:
-          schema: 
-            type: object
-            properties:
-              access_token:
-                type: string
+    parameters:
+      - in: query
+        name: access_token
+        schema:
+          type: string
     
     responses:
       '200':

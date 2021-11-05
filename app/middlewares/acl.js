@@ -13,8 +13,9 @@ var notDeletedById = {
 };
 
 const loggedIn = (req, res, next) => {
-    if (req.body.access_token) {
-        jwt.verify(req.body.access_token, process.env.AUTH_SECRET, (err, decode) => {
+    var token = req.body.access_token || req.query.access_token
+    if (token) {
+        jwt.verify(token, process.env.AUTH_SECRET, (err, decode) => {
             if(err){
                 req.user = undefined;
                 console.error(err)

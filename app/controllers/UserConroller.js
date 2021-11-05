@@ -19,8 +19,8 @@ export const createUser = (req, res) => {
         return true;
     })
     .catch((err) => {
-        if (err.name == "SequelizeUniqueConstraintError"){
-            res.status(500).send({
+        if (err instanceof sequelize.UniqueConstraintError){
+            res.status(412).send({
                 message: "An user with that email address is already registered"
             })
             return false;
@@ -66,9 +66,7 @@ export const getUser = (req, res) => {
 export const getAll = (req, res, next) => {
     var user = User.findAll({
         where: {
-            deleted_at: {
-                [sequelize.Op.eq]: null
-            }
+            deleted_at: null
         },
         attributes:[
             'id',
