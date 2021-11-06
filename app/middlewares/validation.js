@@ -1,6 +1,9 @@
 import { registerValidator, userUpdateValidator } from "./validators/user.js"
 import { loginValidator, refreshValidator} from "./validators/auth.js"
 import { createCityValidator, updateCityValidator } from "./validators/city.js"
+import { createBusValidator, updateBusValidator } from "./validators/bus.js"
+import { createSeatValidator, updateSeatValidator } from "./validators/seat.js"
+
 export const user = {
     registerValidator,
     userUpdateValidator
@@ -14,4 +17,14 @@ export const auth = {
 export const city = {
     createCityValidator,
     updateCityValidator
+}
+
+export const bus = {
+    createBusValidator,
+    updateBusValidator
+}
+
+export const seat = {
+    createSeatValidator,
+    updateSeatValidator
 }

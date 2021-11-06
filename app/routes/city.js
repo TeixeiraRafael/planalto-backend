@@ -12,6 +12,7 @@ cityRoutes.get("/city", getCities);
 cityRoutes.get("/city/:id", getCity);
 
 cityRoutes.put("/city/:id", acl.loggedIn, acl.managerUser, city.updateCityValidator, updateCity);
+
 cityRoutes.delete("/city/:id", acl.loggedIn, acl.managerUser, deleteCity);
 
 export default cityRoutes;
