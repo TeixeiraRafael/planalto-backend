@@ -1,0 +1,400 @@
+basePath: '/api-docs'
+tags:
+- name: trip
+  description: Trip routes
+
+/trip:
+  post:
+    summary: Creates a trip
+    description: Validates the data, registers and returns the resulting persisted object. Requesting user must have Manager privileges.
+    tags:
+    - trip
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema: 
+            type: object
+            properties:
+              access_token:
+                type: string
+              origin_id:
+                type: string
+              destination_id:
+                type: string 
+              bus_id:
+                type: string
+              tripdate:
+                type: string
+              price:
+                type: number
+
+    responses:
+      '200':
+        description:  |
+          ### Success
+          Returns a trip object representing the persisted data
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                trip:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 1
+                    origin_id:
+                      type: integer
+                      example: 2
+                    destination_id:
+                      type: integer
+                      example: 3
+                    bus_id:
+                      type: integer
+                      example: 1
+                    tripdate:
+                      type: string
+                      example: "2021-11-10T05:05:19.723Z"
+                    price:
+                      type: number
+                      example: 113.50
+                    created_at:
+                      type: string
+                      example: "2021-11-05T04:19:25.624Z"
+                    updated_at:
+                      type: string
+                      example: "2021-11-05T04:19:25.624Z"
+
+      '412':
+        description: |
+          ### Validation error 
+          
+          Returns a boolean, a error message and a json object containing the field names associated to a list of their respective validation errors.
+
+
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: "Validation failed"
+                errors:
+                  type: object
+                  properties:
+                    name:
+                      type: array
+                      items:
+                        type: string
+                        example: "Origin city not found."
+      '403':
+        description:  |
+          ### Permission denied
+          The requesting user does not have the permissions required
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success: 
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: "You do not have permission to perform such action"
+  get:
+    summary: Retrieves a list of all the trips
+    description: No authentication is required to perform this request.
+    tags:
+    - trip
+        
+    responses:
+      '200':
+        description:  |
+          ### Success
+          Returns a boolean and a list of cities
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success: 
+                  type: boolean
+                trips: 
+                  type: array
+                  items: 
+                    type: object
+                    properties: 
+                      id: 
+                        type: integer
+                        format: int32
+                      tripdate: 
+                        type: string
+                      price: 
+                        type: number
+                      origin: 
+                        type: object
+                        properties: 
+                          id: 
+                            type: integer
+                            format: int32
+                          name: 
+                            type: string
+                      destination: 
+                        type: object
+                        properties: 
+                          id: 
+                            type: integer
+                            format: int32
+                          name: 
+                            type: string
+                      bus: 
+                        type: object
+                        properties: 
+                          id: 
+                            type: integer
+                            format: int32
+                          plate: 
+                            type: string
+                          model: 
+                            type: string
+
+
+/trip/{id}:
+  get:
+    summary: Retrieves data from a single trip
+    description: No authentication is required to perform this request.
+    tags:
+    - trip
+        
+    responses:
+      '200':
+        description:  |
+          ### Success
+          Returns a boolean and a trip object
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success: 
+                  type: boolean
+                trip: 
+                  type: object
+                  properties: 
+                    id: 
+                      type: integer
+                      format: int32
+                    tripdate: 
+                      type: string
+                    price: 
+                      type: number
+                    origin: 
+                      type: object
+                      properties: 
+                        id: 
+                          type: integer
+                          format: int32
+                        name: 
+                          type: string
+                    destination: 
+                      type: object
+                      properties: 
+                        id: 
+                          type: integer
+                          format: int32
+                        name: 
+                          type: string
+                    bus: 
+                      type: object
+                      properties: 
+                        id: 
+                          type: integer
+                          format: int32
+                        plate: 
+                          type: string
+                        model: 
+                          type: string
+
+  put:
+    summary: Updates a trip
+    description: Validates data, registers and returns the resulting persisted data. Requesting user mus have Manager privileges.
+    tags:
+    - trip
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema: 
+            type: object
+            properties:
+              access_token:
+                type: string
+              origin_id:
+                type: string
+              destination_id:
+                type: string 
+              bus_id:
+                type: string
+              tripdate:
+                type: string
+              price:
+                type: number
+
+    responses:
+      '200':
+        description:  |
+          ### Success
+          Returns a trip object representing the persisted data
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success: 
+                  type: boolean
+                trip: 
+                  type: object
+                  properties: 
+                    id: 
+                      type: integer
+                      format: int32
+                    tripdate: 
+                      type: string
+                    price: 
+                      type: number
+                    updated_at: 
+                      type: string
+                    origin: 
+                      type: object
+                      properties: 
+                        id: 
+                          type: integer
+                          format: int32
+                        name: 
+                          type: string
+                    destination: 
+                      type: object
+                      properties: 
+                        id: 
+                          type: integer
+                          format: int32
+                        name: 
+                          type: string
+                    bus: 
+                      type: object
+                      properties: 
+                        id: 
+                          type: integer
+                          format: int32
+                        plate: 
+                          type: string
+                        model: 
+                          type: string
+
+      '403':
+        description:  |
+          ### Permission denied
+          The requesting user does not have the permissions required
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success: 
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: "You do not have permission to perform such action"
+
+  delete:
+    summary: Deletes a trip
+    description: Deletes a registered trip. Requesting user mus have Manager privileges.
+    tags:
+    - trip
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema: 
+            type: object
+            properties:
+              access_token:
+                type: string
+
+    responses:
+      '200':
+        description:  |
+          ### Success
+          Returns a user object representing the deleted trip
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success: 
+                  type: boolean
+                trip: 
+                  type: object
+                  properties: 
+                    id: 
+                      type: integer
+                      format: int32
+                    tripdate: 
+                      type: string
+                    price: 
+                      type: number
+                    deleted_at: 
+                      type: string
+                    origin: 
+                      type: object
+                      properties: 
+                        id: 
+                          type: integer
+                          format: int32
+                        name: 
+                          type: string
+                    destination: 
+                      type: object
+                      properties: 
+                        id: 
+                          type: integer
+                          format: int32
+                        name: 
+                          type: string
+                    bus: 
+                      type: object
+                      properties: 
+                        id: 
+                          type: integer
+                          format: int32
+                        plate: 
+                          type: string
+                        model: 
+                          type: string
+                      
+      '403':
+        description:  |
+          ### Permission denied
+          The requesting user does not have the permissions required
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success: 
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: "You do not have permission to perform such action"

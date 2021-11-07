@@ -1,0 +1,310 @@
+basePath: '/api-docs'
+tags:
+- name: seat
+  description: Seat routes
+
+/seat:
+  post:
+    summary: Creates a seat
+    description: Validates the data, registers and returns the resulting persisted object. Requesting user must have Manager privileges.
+    tags:
+    - seat
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema: 
+            type: object
+            properties:
+              bus_id:
+                type: string
+              name:
+                type: string
+              description:
+                type: string
+              
+
+    responses:
+      '200':
+        description:  |
+          ### Success
+          Returns a user object representing the persisted data
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  example: 318765
+                bus_id:
+                  type: integer
+                  example: 2
+                name:
+                  type: string
+                  example: "A1"
+                description:
+                  type: string
+                  example: "corridor"
+                created_at:
+                  type: string
+                  example: "2021-11-05T04:19:25.624Z"
+                updated_at:
+                  type: string
+                  example: "2021-11-05T04:19:25.624Z"
+
+      '412':
+        description: |
+          ### Validation error 
+          
+          Returns a boolean, a error message and a json object containing the field names associated to a list of their respective validation errors.
+
+
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: "Validation failed"
+                errors:
+                  type: object
+                  properties:
+                    name:
+                      type: array
+                      items:
+                        type: string
+                        example: "The name field is required."
+      '403':
+        description:  |
+          ### Permission denied
+          The requesting user does not have the permissions required
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success: 
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: "You do not have permission to perform such action"
+  get:
+    summary: Retrieves a list of all the seats
+    description: No authentication is required to perform this request.
+    tags:
+    - seat
+        
+    responses:
+      '200':
+        description:  |
+          ### Success
+          Returns a boolean and a list of cities
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                seates:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    bus_id:
+                      type: integer
+                    name:
+                      type: string
+                    description:
+                      type: string
+                  example:
+                  - id: 1
+                    bus_id: 2
+                    name: "A1"
+                    description: "corridor"
+                  - id: 2
+                    bus_id: 2
+                    name: "A2"
+                    description: "window"
+                  - id: 3
+                    bus_id: 2
+                    name: "B1"
+                    description: "corridor"
+
+
+/seat/{id}:
+  get:
+    summary: Retrieves data from a single seat
+    description: No authentication is required to perform this request.
+    tags:
+    - seat
+        
+    responses:
+      '200':
+        description:  |
+          ### Success
+          Returns a boolean and a seat object
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success: 
+                  type: boolean
+                  example: true
+                seat:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 1
+                    bus_id:
+                      type: integer
+                      example: 2
+                    name:
+                      type: string
+                      example: "A1"
+                    description:
+                      type: string
+                      example: "corridor"
+  put:
+    summary: Updates a seat
+    description: Validates data, registers and returns the resulting persisted data. Requesting user mus have Manager privileges.
+    tags:
+    - seat
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema: 
+            type: object
+            properties:
+              access_token:
+                type: string
+              bus_id:
+                type: integer
+              name:
+                type: string
+              description:
+                type: string
+
+    responses:
+      '200':
+        description:  |
+          ### Success
+          Returns a seat object representing the persisted data
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                seat:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 1
+                    bus_id:
+                      type: integer
+                      example: 2
+                    name:
+                      type: string
+                      example: "A1"
+                    description:
+                      type: string
+                      example: "corridor"
+                    created_at:
+                      type: string
+                      example: "2021-11-05T04:19:25.624Z"
+                    updated_at:
+                      type: string
+                      example: "2021-11-05T04:19:25.624Z"
+
+      '403':
+        description:  |
+          ### Permission denied
+          The requesting user does not have the permissions required
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success: 
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: "You do not have permission to perform such action"
+
+  delete:
+    summary: Deletes a seat
+    description: Deletes a registered seat. Requesting user mus have Manager privileges.
+    tags:
+    - seat
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema: 
+            type: object
+            properties:
+              access_token:
+                type: string
+
+    responses:
+      '200':
+        description:  |
+          ### Success
+          Returns a user object representing the deleted seat
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                seat:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 1
+                    bus_id:
+                      type: integer
+                      example: 2
+                    name:
+                      type: string
+                      example: "A1"
+                    description:
+                      type: string
+                      example: "corridor"
+                    created_at:
+                      type: string
+                      example: "2021-11-05T04:19:25.624Z"
+                    deleted_at:
+                      type: string
+                      example: "2021-11-05T04:19:25.624Z"
+                      
+      '403':
+        description:  |
+          ### Permission denied
+          The requesting user does not have the permissions required
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success: 
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: "You do not have permission to perform such action"

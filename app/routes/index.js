@@ -5,6 +5,7 @@ import authRoutes from './auth.js';
 import cityRoutes from './city.js';
 import busRoutes from './bus.js';
 import seatRoutes from './seat.js';
+import tripRoutes from './trip.js';
 
 import documentationRoutes from './docs.js';
 
@@ -15,6 +16,7 @@ routes.use(authRoutes);
 routes.use(cityRoutes);
 routes.use(busRoutes);
 routes.use(seatRoutes);
+routes.use(tripRoutes);
 
 routes.use(documentationRoutes);
 

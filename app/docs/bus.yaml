@@ -1,0 +1,286 @@
+basePath: '/api-docs'
+tags:
+- name: bus
+  description: Bus routes
+
+/bus:
+  post:
+    summary: Creates a bus
+    description: Validates the data, registers and returns the resulting persisted object. Requesting user must have Manager privileges.
+    tags:
+    - bus
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema: 
+            type: object
+            properties:
+              plate:
+                type: string
+              model:
+                type: string
+              
+
+    responses:
+      '200':
+        description:  |
+          ### Success
+          Returns a user object representing the persisted data
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  example: 318765
+                plate:
+                  type: string
+                  example: "AAA-1234"
+                model:
+                  type: string
+                  example: "Bus model #1"
+                created_at:
+                  type: string
+                  example: "2021-11-05T04:19:25.624Z"
+                updated_at:
+                  type: string
+                  example: "2021-11-05T04:19:25.624Z"
+
+      '412':
+        description: |
+          ### Validation error 
+          
+          Returns a boolean, a error message and a json object containing the field names associated to a list of their respective validation errors.
+
+
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: "Validation failed"
+                errors:
+                  type: object
+                  properties:
+                    plate:
+                      type: array
+                      items:
+                        type: string
+                        example: "The plate field is required."
+      '403':
+        description:  |
+          ### Permission denied
+          The requesting user does not have the permissions required
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success: 
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: "You do not have permission to perform such action"
+  get:
+    summary: Retrieves a list of all the buses
+    description: No authentication is required to perform this request.
+    tags:
+    - bus
+        
+    responses:
+      '200':
+        description:  |
+          ### Success
+          Returns a boolean and a list of cities
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                buses:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    plate:
+                      type: string
+                    model:
+                      type: string
+                  example:
+                  - id: 1
+                    plate: "AAA-1234"
+                    model: "Bus Model #1"
+                  - id: 2
+                    plate: "AAA-5678"
+                    model: "Bus Model #1"
+                  - id: 3
+                    plate: "ABC-1234"
+                    model: "Bus Model #2"
+
+
+/bus/{id}:
+  get:
+    summary: Retrieves data from a single bus
+    description: No authentication is required to perform this request.
+    tags:
+    - bus
+        
+    responses:
+      '200':
+        description:  |
+          ### Success
+          Returns a boolean and a bus object
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success: 
+                  type: boolean
+                  example: true
+                bus:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 1
+                    plate:
+                      type: string
+                      example: "AAA-1234"
+                    model:
+                      type: string
+                      example: "Bus Model #1"
+  put:
+    summary: Updates a bus
+    description: Validates data, registers and returns the resulting persisted data. Requesting user mus have Manager privileges.
+    tags:
+    - bus
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema: 
+            type: object
+            properties:
+              access_token:
+                type: string 
+              plate:
+                type: string
+              model:
+                type: string
+
+    responses:
+      '200':
+        description:  |
+          ### Success
+          Returns a bus object representing the persisted data
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                bus:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 318765
+                    plate:
+                      type: string
+                      example: "AAA-1234"
+                    model:
+                      type: string
+                      example: "Bus Model #1"
+                    created_at:
+                      type: string
+                      example: "2021-11-05T04:19:25.624Z"
+                    updated_at:
+                      type: string
+                      example: "2021-11-05T04:19:25.624Z"
+                    deleted_at:
+                      type: string
+                      example: null
+
+      '403':
+        description:  |
+          ### Permission denied
+          The requesting user does not have the permissions required
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success: 
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: "You do not have permission to perform such action"
+
+  delete:
+    summary: Deletes a bus
+    description: Deletes a registered bus. Requesting user mus have Manager privileges.
+    tags:
+    - bus
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema: 
+            type: object
+            properties:
+              access_token:
+                type: string
+
+    responses:
+      '200':
+        description:  |
+          ### Success
+          Returns a user object representing the deleted bus
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  example: 318765
+                plate:
+                  type: string
+                  example: "AAA-1234"
+                model:
+                  type: string
+                  example: "Bus Model #1"
+                created_at:
+                  type: string
+                  example: "2021-11-05T04:19:25.624Z"
+                deleted_at:
+                  type: string
+                  example: "2021-11-05T04:19:25.624Z"
+
+      '403':
+        description:  |
+          ### Permission denied
+          The requesting user does not have the permissions required
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success: 
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: "You do not have permission to perform such action"
