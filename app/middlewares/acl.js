@@ -92,7 +92,7 @@ const selfOrRoot = (req, res, next) => {
     var user = User.findOne(notDeletedById)
     .then((user) => {
         var id = user.Role.id
-        if(id == 3 || req.user_id == req.params.id){
+        if(id == 3 || req.user_id == req.params.id || req.user_id == req.body.user_id){
             next();
             return true;
         }

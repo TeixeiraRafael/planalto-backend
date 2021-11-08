@@ -4,6 +4,7 @@ import City from './City.js'
 import Bus from './Bus.js'
 import Seat from './Seat.js'
 import Trip from './Trip.js'
+import Reservation from './Reservation.js'
 
 Role.hasMany(User, {foreignKey: 'role_id'});
 User.belongsTo(Role, {foreignKey: 'role_id'});
@@ -29,5 +30,6 @@ export {
     City,
     Bus,
     Seat,
-    Trip
+    Trip,
+    Reservation
 }
