@@ -8,7 +8,19 @@ export const createUser = (req, res) => {
     var newUser = new User({
         name: req.body.name,
         email: req.body.email,
-        password: hash_password
+        password: hash_password,
+        document: req.body.document,
+        birthdate: req.body.birthdate,
+        phone_type: req.body.phone_type,
+        phone: req.body.phone,
+        addr_postal_code: req.body.addr_postal_code,
+        addr_street: req.body.addr_street,
+        addr_number: req.body.addr_number,
+        addr_additional_info: req.body.addr_additional_info,
+        neighbourhood: req.body.neighbourhood,
+        city: req.body.city,
+        state: req.body.state,
+        enable_sms: req.body.enable_sms
     });
 
     newUser.save()
@@ -68,14 +80,7 @@ export const getAll = (req, res, next) => {
         where: {
             deleted_at: null
         },
-        attributes:[
-            'id',
-            'role_id',
-            'name',
-            'email',
-            'created_at',
-            'updated_at'
-        ]
+        attributes: ['id', 'role_id', 'name', 'email', 'document']
     })
     .then((users) => {
         res.status(200).send({
@@ -101,8 +106,20 @@ export const updateUser = (req, res) => {
     .then((user) => {
         user.name = req.body.name || user.name;
         user.email = req.body.email || user.email;
-
+        user.document = req.body.document || user.document;
+        user.birthdate = req.body.birthdate || user.birthdate;
+        user.phone_type = req.body.phone_type || user.phone_type;
+        user.phone = req.body.phone || user.phone;
+        user.addr_postal_code = req.body.addr_postal_code || user.addr_postal_code;
+        user.addr_street = req.body.addr_street || user.addr_street;
+        user.addr_number = req.body.addr_number || user.addr_number;
+        user.addr_additional_info = req.body.addr_additional_info || user.addr_additional_info;
+        user.neighbourhood = req.body.neighbourhood || user.neighbourhood;
+        user.city = req.body.city || user.city;
+        user.state = req.body.state || user.state;
+        user.enable_sms = req.body.enable_sms || user.enable_sms
         user.updated_at = new Date().toISOString();
+        
         user.save().then((updatedUser) => {
             updatedUser.password = undefined;
             updatedUser.created_at = undefined;

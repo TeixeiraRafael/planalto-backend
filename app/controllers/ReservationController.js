@@ -93,7 +93,7 @@ export const deleteReservation = (req, res) => {
         })
         .catch((err) => {
             internalServerError(res);
-            return false;
+        return false;
         })
     })
     .catch((err) => {
