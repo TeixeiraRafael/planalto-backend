@@ -1,6 +1,6 @@
 import sequelize from 'sequelize';
 
-import { Trip, Bus, City } from '../models/index.js'
+import { Trip, Bus, City, Seat, Reservation } from '../models/index.js'
 import { internalServerError } from '../helpers/errors.js';
 
 export const createTrip = (req, res) => {
@@ -36,6 +36,7 @@ export const getTrips = (req, res) => {
         ],
         attributes: ['id', 'tripdate', 'price']
     }).then((trips) => {
+        
         res.status(200).send({
             success: true,
             trips
@@ -55,8 +56,8 @@ export const getTrips = (req, res) => {
     })
 }
 
-export const getTrip = (req, res) => {
-    var trips = Trip.findOne({
+export  const getTrip = async (req, res) => {
+    Trip.findOne({
         where: {
             id: req.params.id,
             deleted_at: null,
@@ -64,16 +65,30 @@ export const getTrip = (req, res) => {
         include: [
             { model: City, as: 'origin', attributes: ['id', 'name'] }, 
             { model: City, as: 'destination', attributes: ['id', 'name'] },
-            { model: Bus, as: 'bus', attributes: ['id', 'plate', 'model'] }
+            { 
+                model: Bus, as: 'bus', attributes: ['id', 'plate', 'model'],
+                include: [{model: Seat}]
+            }
         ],
         attributes: ['id', 'tripdate', 'price']
     }).then((trip) => {
-        res.status(200).send({
-            success: true,
-            trip
+        var reserved_seats = Reservation.findAll({
+            where: {
+                trip_id: trip.id,
+                deleted_at: null,
+            },
+            attributes: ["seat_id"]
+        }).then((reserved_seats) => {
+            res.status(200).send({
+                success: true,
+                trip,
+                reserved_seats
+            })  
+        }).catch((err) => {
+
         })
-    })
-    .catch((err) => {
+        
+    }).catch((err) => {
         console.error(err)
         if(err instanceof sequelize.EmptyResultError){
             res.status(404).send({
@@ -176,6 +191,49 @@ export const deleteTrip = (req, res) => {
             return false;
         }
         internalServerError(res)
+        return false;
+    })
+}
+
+export const getTripByDate = (req, res) => {
+    var lower = new Date(req.body.tripdate);
+    lower.setHours(0);
+    lower.setMinutes(0);
+    lower.setSeconds(1);
+
+    var higher = new Date(req.body.tripdate);
+    higher.setHours(23);
+    higher.setMinutes(59);
+    higher.setSeconds(59);
+
+    Trip.findAll({
+        where: {
+            origin_id: req.body.origin_id,
+            destination_id: req.body.destination_id,
+            tripdate: {
+                [sequelize.Op.gt]: lower,
+                [sequelize.Op.lt]: higher
+            },
+            deleted_at: null,
+        }
+    }).then((trips) => {
+        res.status(200).send({
+            success: true,
+            trips
+        })
+        return true;
+    }).catch((err) => {
+        if(err instanceof sequelize.EmptyResultError){
+            res.status(404).send({
+                success: false,
+                message: "No trips found"
+            })
+            return false;
+        }
+        res.status(500).send({
+            success: false,
+            status: "Internal server Error"
+        });
         return false;
     })
 }

@@ -2,7 +2,7 @@ import express from 'express';
 
 import { acl } from '../middlewares/acl.js'
 import { trip } from '../middlewares/validation.js';
-import { createTrip, getTrips, getTrip, updateTrip, deleteTrip } from '../controllers/TripController.js';
+import { createTrip, getTrips, getTrip, updateTrip, deleteTrip, getTripByDate } from '../controllers/TripController.js';
 
 export const tripRoutes = express.Router();
 
@@ -37,6 +37,13 @@ tripRoutes.delete(
     acl.managerUser, 
     deleteTrip
 )
+
+tripRoutes.post(
+    '/tripByDate', 
+    trip.validOrigin, 
+    trip.validDestination, 
+    getTripByDate
+);
 
 export default tripRoutes;
 
