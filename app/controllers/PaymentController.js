@@ -40,14 +40,14 @@ export const process_payment = (req, res) => {
 
 export const paymentConfirmation = (req, res) => {
     console.log(req)
-    const id = req.body.data.id
+    const id = req.query.id
     mercadopago.payment.findById(id)
     .then((data) => {
         if (data["body"]["status"] == "approved"  || data["body"]["status_detail"] == "approved" || data["body"]["status"] == "accredited" || data["body"]["status_detail"] == "accredited") {
             Reservation.findOne({
                 where: {
                     id: req.params.id,
-                    transaction_id: data.body.data.id,
+                    transaction_id: req.query.id,
                     deleted_at: null,
                 }
             }).then((reservation) => {
