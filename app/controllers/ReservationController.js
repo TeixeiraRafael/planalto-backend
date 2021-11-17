@@ -1,5 +1,4 @@
 import { Reservation, User, City, Trip } from '../models/index.js'
-import { internalServerError } from '../helpers/errors.js';
 
 import sequelize from 'sequelize';
 import mercadopago from 'mercadopago';
@@ -19,37 +18,42 @@ export const createReservation = (req, res) => {
     })
     .catch(async (err) => {
         if(err instanceof sequelize.EmptyResultError){
-            getPaymentData(req)
-            .then((paymentData) => {
-                console.log(paymentData)
-                var pag = mercadopago.payment.create(paymentData)
-                .then((data) => {
-                    const qr_code_base64 = data.response.point_of_interaction.transaction_data.qr_code_base64
-                    
-                    var reservation = new Reservation({
-                        user_id: req.user_id,
-                        trip_id: req.body.trip_id,
-                        seat_id: req.body.seat_id,
-                        transaction_id: data.body.id,
-                        approved: false
-                    });
-                    reservation.save()
-                    .then((newReservation) => {
-                        res.status(200).send({
-                            success: true,
-                            reservation: newReservation,
-                            qr_code_base64
-                        });
+            var reservation = new Reservation({
+                user_id: req.user_id,
+                trip_id: req.body.trip_id,
+                seat_id: req.body.seat_id,
+                approved: false
+            });
+            reservation.save()
+            .then((_reservation) => {
+                getPaymentData(req, _reservation)
+                .then((paymentData) => {
+                    console.log(paymentData)
+                    var pag = mercadopago.payment.create(paymentData)
+                    .then((data) => {
+                        const qr_code_base64 = data.response.point_of_interaction.transaction_data.qr_code_base64
+                        _reservation.trasaction_id = data.body.id
+                        _reservation.save()
+                        .then((newReservation) => { 
+                            res.status(200).send({
+                                success: true,
+                                reservation: newReservation,
+                                qr_code_base64
+                            });
+                        })
                     })
                     .catch((err) => {
-                        console.log(err);
-                        internalServerError(res);
-                    })
-                })
-                .catch((err) => {
-                    console.error(err);
+                        console.error(err);
+                    });
                 });
-            });            
+            })
+            .catch((err) => {
+                console.log(err);
+                res.status(500).send({
+                    success: false,
+                    message: "Internal Server Error."
+                })
+            })           
         }
     })    
 }
@@ -139,7 +143,7 @@ export const deleteReservation = (req, res) => {
     });
 }
 
-const getPaymentData = (req) => {
+const getPaymentData = (req, reservation) => {
     const user_id = req.user_id;
     const trip_id = req.body.trip_id;
 
@@ -164,6 +168,7 @@ const getPaymentData = (req) => {
                     transaction_amount: trip.price,
                     description: 'Trip from ' + trip.origin.name + ' to ' + trip.destination.name + ' on ' + trip.tripdate,
                     payment_method_id: 'pix',
+                    notification_url: "http://" +  process.env.DB_HOST + ":5000/payment/confirmation/" + reservation.id,
                     payer: {
                         email: user.email,
                         first_name: user.name,
