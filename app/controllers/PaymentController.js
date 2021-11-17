@@ -39,6 +39,7 @@ export const process_payment = (req, res) => {
 }
 
 export const paymentConfirmation = (req, res) => {
+    console.log(req)
     const id = req.body.payment.id
     console.log(id);
     mercadopago.payment.findById(id)
