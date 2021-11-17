@@ -5,6 +5,8 @@ import { createBusValidator, updateBusValidator } from "./validators/bus.js"
 import { createSeatValidator, updateSeatValidator, busExists } from "./validators/seat.js"
 import { validOrigin, validDestination, createTripValidator, updateTripValidator } from './validators/trip.js'
 import { createReservationValidator, updateReservationValidator, tripExists, seatExists, reservationOwner } from "./validators/reservation.js"
+import {paymentValidator } from "./validators/payment.js"
+
 
 export const user = {
     registerValidator,
@@ -46,4 +48,8 @@ export const reservation = {
     tripExists,
     seatExists,
     reservationOwner
+}
+
+export const payment ={
+    paymentValidator
 }
