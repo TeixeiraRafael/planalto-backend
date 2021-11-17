@@ -4,23 +4,39 @@ import { internalServerError } from '../helpers/errors.js';
 import sequelize from 'sequelize';
 
 export const createReservation = (req, res) => {
-    var reservation = new Reservation({
-        user_id: req.user_id,
-        trip_id: req.body.trip_id,
-        seat_id: req.body.seat_id,
-    });
-
-    reservation.save()
-    .then((newReservation) => {
-        res.status(200).send({
-            success: true,
-            reservation: newReservation
-        });
+    var checkReservation = Reservation.findAll({
+        where: {
+            trip_id: req.body.trip_id,
+            seat_id: req.body.seat_id
+        }
+    })
+    .then((reservation) => {
+        res.status(412).send({
+            success: false,
+            message: "Seat alread taken."
+        })
     })
     .catch((err) => {
-        console.log(err);
-        internalServerError(res);
-    })
+        if(err instanceof sequelize.EmptyResultError){
+            var reservation = new Reservation({
+                user_id: req.user_id,
+                trip_id: req.body.trip_id,
+                seat_id: req.body.seat_id,
+            });
+        
+            reservation.save()
+            .then((newReservation) => {
+                res.status(200).send({
+                    success: true,
+                    reservation: newReservation
+                });
+            })
+            .catch((err) => {
+                console.log(err);
+                internalServerError(res);
+            })
+        }
+    })    
 }
 
 export const getReservations = (req, res) => {
