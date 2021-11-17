@@ -22,6 +22,14 @@ export const Reservation = db.define('Reservation',
             type: 'BIGINT',
             allowNull: false,
         },
+        transaction_id: {
+            type: DataTypes.STRING(15),
+            allowNull: true
+        },
+        approved: {
+            type: DataTypes.BOOLEAN,
+            allowNull: true
+        },
         created_at: {
             type: 'TIMESTAMP',
             allowNull: true
