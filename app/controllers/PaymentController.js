@@ -39,9 +39,7 @@ export const process_payment = (req, res) => {
 }
 
 export const paymentConfirmation = (req, res) => {
-    console.log(req)
-    const id = req.body.payment.id
-    console.log(id);
+    const id = req.body.data.id
     mercadopago.payment.findById(id)
     .then((data) => {
         if (data["body"]["status"] == "approved"  || data["body"]["status_detail"] == "approved" || data["body"]["status"] == "accredited" || data["body"]["status_detail"] == "accredited") {
