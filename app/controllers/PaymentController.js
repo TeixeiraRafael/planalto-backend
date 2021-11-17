@@ -1,5 +1,8 @@
 import mercadopago from 'mercadopago'
 import dotenv from 'dotenv/config';
+
+import { Reservation } from '../models/index.js';
+
 mercadopago.configurations.setAccessToken(process.env.ACCESS_TOKEN)
 
 export const process_payment = (req, res) => {
@@ -33,6 +36,37 @@ export const process_payment = (req, res) => {
     }).catch(function (error) {
         console.log("erro de pagamento: "+ error);
     });
+}
+
+export const paymentConfirmation = (req, res) => {
+    const id = req.body.payment.id
+    console.log(id);
+    mercadopago.payment.findById(id)
+    .then((data) => {
+        if (data["body"]["status"] == "approved"  || data["body"]["status_detail"] == "approved" || data["body"]["status"] == "accredited" || data["body"]["status_detail"] == "accredited") {
+            Reservation.findOne({
+                where: {
+                    id: req.params.id,
+                    transaction_id: data.body.id,
+                    deleted_at: null,
+                }
+            }).then((reservation) => {
+                reservation.approved = true
+                reservation.save()
+                .then((updatedReservation) => {
+                    res.status(200).send();
+                })
+            }).catch((err) => {
+                res.status(500).send({
+                    success: false,
+                    message: "Internal Server Error."
+                })
+            })
+        }
+    })
+    .catch( (error) => {
+        console.log("erro ao receber pagamento: " + error)
+    })
 }
 
 export default process_payment;
