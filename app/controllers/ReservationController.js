@@ -168,7 +168,7 @@ const getPaymentData = (req, reservation) => {
                     transaction_amount: trip.price,
                     description: 'Trip from ' + trip.origin.name + ' to ' + trip.destination.name + ' on ' + trip.tripdate,
                     payment_method_id: 'pix',
-                    notification_url: "http://" +  process.env.DB_HOST + ":5000/payment/confirmation/" + reservation.id,
+                    notification_url: "http://" +  process.env.SERVER_HOST + ":5000/payment/confirmation/" + reservation.id,
                     payer: {
                         email: user.email,
                         first_name: user.name,
