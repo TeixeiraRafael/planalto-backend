@@ -7,7 +7,7 @@ export const registerValidator = (req, res, next) => {
         "email": "required|email|max:500|confirmed",
         "document" : "required|max:100",
         "birthdate": "requred|date",
-        "phone_type": "required|integer",
+        "phone_type": "integer",
         "phone": "required|max:20",
         "addr_postal_code":"required|max:20",
         "addr_street": "required|max:100",
