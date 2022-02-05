@@ -1,0 +1,16 @@
+backend:
+  build: .
+  ports:
+   - "5000:5000"
+  volumes:
+   - ./app:/usr/src/backend/
+  links:
+   - db
+
+db:
+  image: mysql:8.0.27
+  volumes:
+   - /var/lib/mysql
+  environment:
+   - MYSQL_ROOT_PASSWORD=admin
+   - MYSQL_DATABASE=admin
