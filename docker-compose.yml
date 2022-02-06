@@ -1,16 +1,45 @@
-backend:
-  build: .
-  ports:
-   - "5000:5000"
-  volumes:
-   - ./app:/usr/src/backend/
-  links:
-   - db
+services:
+  backend:
+    build: .
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./app:/usr/app/
+    links:
+      - db
+    networks:
+      - backend-network
+  
+  pg-admin:
+    image: dpage/pgadmin4
+    ports:
+      - "8080:80"
+    volumes:
+      - ./db/servers.json:/pgadmin4/servers.json
+    links:
+      - db
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
+      - PGADMIN_DEFAULT_PASSWORD=admin
+    networks:
+      - backend-network
+    logging:
+      driver: "none"
 
-db:
-  image: mysql:8.0.27
-  volumes:
-   - /var/lib/mysql
-  environment:
-   - MYSQL_ROOT_PASSWORD=admin
-   - MYSQL_DATABASE=admin
+  db:
+    image: postgres:14.1
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./db/data:/var/lib/postgresql/data
+      - ./db/database.sql:/docker-entrypoint-initdb.d/database.sql
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=transport
+    networks:
+      - backend-network
+
+networks:
+  backend-network:
+    driver: bridge
