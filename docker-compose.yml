@@ -4,12 +4,12 @@ services:
     ports:
       - "5000:5000"
     volumes:
-      - ./app/src:/usr/app/backend/src
+      - ./app/src:/usr/src
     links:
       - db
     networks:
       - backend-network
-    working_dir: /usr/app/backend/src
+    working_dir: /usr/src
     command: bash -c "npm install && npm start"
 
   
