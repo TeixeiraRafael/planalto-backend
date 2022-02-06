@@ -13,7 +13,7 @@ const swaggerDefinitions = {
 
 export const swaggerOptions = {
     definition: swaggerDefinitions,
-    apis: ['./app/docs/*.yaml'],
+    apis: ['./src/docs/*.yaml'],
 };
 
 export default swaggerOptions;
