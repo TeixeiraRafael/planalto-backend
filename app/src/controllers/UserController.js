@@ -167,4 +167,12 @@ export const deleteUser = (req, res) => {
         return false;
     })
 }
+
+export const resetPassword = (req, res) => {
+    res.status(200).send({
+        success: true,
+        message: "This isn't ready yet, don't get excited."
+    })
+}
+
 export default createUser;
