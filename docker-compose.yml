@@ -4,7 +4,7 @@ services:
     ports:
       - "5000:5000"
     volumes:
-      - ./app/src:/usr/src
+      - ./app:/usr/src
     links:
       - db
     networks:

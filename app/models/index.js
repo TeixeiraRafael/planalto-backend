@@ -17,7 +17,7 @@ Trip.belongsTo(Bus, {as: 'bus', foreignKey: 'bus_id'});
 
 City.hasOne(Trip, {as: 'origin', foreignKey: 'origin_id'});
 Trip.belongsTo(City, {as: 'origin', foreignKey: 'origin_id'});
-
+// trip_legs
 City.hasOne(Trip, {as: 'destination', foreignKey: 'destination_id'});
 Trip.belongsTo(City, {as: 'destination', foreignKey: 'destination_id'});
 

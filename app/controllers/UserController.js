@@ -1,5 +1,6 @@
 import  bcrypt from 'bcrypt';
 import sequelize from 'sequelize';
+
 import { internalServerError } from '../helpers/errors.js';
 import { User, Role } from '../models/index.js';
 
@@ -168,11 +169,6 @@ export const deleteUser = (req, res) => {
     })
 }
 
-export const resetPassword = (req, res) => {
-    res.status(200).send({
-        success: true,
-        message: "This isn't ready yet, don't get excited."
-    })
-}
+
 
 export default createUser;
