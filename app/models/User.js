@@ -104,7 +104,7 @@ export const User = db.define('User',
     {
         tableName: 'users',
         timestamps: false,
-        rejectOnEmpty: true
+        rejectOnEmpty: true,
     }
 );
 

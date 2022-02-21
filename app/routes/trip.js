@@ -12,8 +12,6 @@ tripRoutes.post(
     acl.managerUser, 
     trip.createTripValidator,
     trip.busExists, 
-    trip.validOrigin, 
-    trip.validDestination,
     createTrip
 );
 
@@ -26,8 +24,6 @@ tripRoutes.put(
     acl.managerUser, 
     trip.updateTripValidator,
     trip.busExists, 
-    trip.validOrigin, 
-    trip.validDestination,
     updateTrip
 )
 
@@ -40,8 +36,6 @@ tripRoutes.delete(
 
 tripRoutes.post(
     '/tripByDate', 
-    trip.validOrigin, 
-    trip.validDestination, 
     getTripByDate
 );
 

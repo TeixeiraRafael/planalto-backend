@@ -3,10 +3,10 @@ import { loginValidator, refreshValidator, forgotPassword } from "./validators/a
 import { createCityValidator, updateCityValidator } from "./validators/city.js"
 import { createBusValidator, updateBusValidator } from "./validators/bus.js"
 import { createSeatValidator, updateSeatValidator, busExists } from "./validators/seat.js"
-import { validOrigin, validDestination, createTripValidator, updateTripValidator } from './validators/trip.js'
+import { createTripValidator, updateTripValidator } from './validators/trip.js'
 import { createReservationValidator, updateReservationValidator, tripExists, seatExists, reservationOwner } from "./validators/reservation.js"
-import {paymentValidator } from "./validators/payment.js"
-
+import { paymentValidator } from "./validators/payment.js"
+import { createTripLegValidator, updateTripLegValidator, validOrigin, validDestination } from "./validators/trip_leg.js"
 
 export const user = {
     registerValidator,
@@ -37,8 +37,6 @@ export const seat = {
 
 export const trip = {
     busExists,
-    validOrigin,
-    validDestination,
     createTripValidator,
     updateTripValidator
 }
@@ -53,4 +51,11 @@ export const reservation = {
 
 export const payment ={
     paymentValidator
+}
+
+export const trip_leg = {
+    createTripLegValidator,
+    updateTripLegValidator,
+    validOrigin,
+    validDestination
 }

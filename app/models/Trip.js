@@ -10,14 +10,7 @@ export const Trip = db.define('Trip',
             autoIncrement: true,
             primaryKey: true,
         },
-        origin_id: {
-            type: DataTypes.BIGINT,
-            allowNull: false,
-        },
-        destination_id: {
-            type: DataTypes.BIGINT,
-            allowNull: false,
-        },
+        
         bus_id: {
             type: DataTypes.BIGINT,
             allowNull: false,

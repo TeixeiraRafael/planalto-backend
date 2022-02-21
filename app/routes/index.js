@@ -8,6 +8,7 @@ import seatRoutes from './seat.js';
 import tripRoutes from './trip.js';
 import reservationRoutes from './reservation.js';
 import paymentRoutes from './payment.js';
+import tripLegRoutes from './trip_leg.js';
 
 import documentationRoutes from './docs.js';
 
@@ -19,6 +20,7 @@ routes.use(cityRoutes);
 routes.use(busRoutes);
 routes.use(seatRoutes);
 routes.use(tripRoutes);
+routes.use(tripLegRoutes);
 routes.use(reservationRoutes);
 routes.use(paymentRoutes);
 

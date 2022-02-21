@@ -6,7 +6,6 @@ import mercadopago from 'mercadopago';
 export const createReservation = (req, res) => {
     var checkReservation = Reservation.findAll({
         where: {
-            trip_id: req.body.trip_id,
             seat_id: req.body.seat_id
         }
     })
@@ -20,7 +19,6 @@ export const createReservation = (req, res) => {
         if(err instanceof sequelize.EmptyResultError){
             var reservation = new Reservation({
                 user_id: req.user_id,
-                trip_id: req.body.trip_id,
                 seat_id: req.body.seat_id,
                 approved: false
             });
@@ -160,10 +158,6 @@ const getPaymentData = (req, reservation) => {
                     id: trip_id,
                     deleted_at: null
                 },
-                include: [
-                    { model: City, as: 'origin', attributes: ['name'] }, 
-                    { model: City, as: 'destination', attributes: ['name'] },
-                ]
             }).then((trip) => {
                 var payment_data = {
                     transaction_amount: trip.price,

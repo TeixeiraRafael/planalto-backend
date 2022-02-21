@@ -46,7 +46,6 @@ export const updateSeatValidator = (req, res, next) => {
 }
 
 export const busExists = (req, res, next) => {
-    console.log(req)
     var bus = Bus.findOne({
         where: {
             id: req.body.bus_id,
@@ -54,10 +53,12 @@ export const busExists = (req, res, next) => {
         },
     })
     .then((bus) => {
+        console.log(bus)
         next();
         return true;
     })
     .catch((err) => {
+        console.log(req.body)
         if(err instanceof sequelize.EmptyResultError){
             res.status(412).send({
                 success: false,
@@ -68,7 +69,6 @@ export const busExists = (req, res, next) => {
             })
             return false;
         }
-        console.error(err)
         internalServerError(res)
         return false;
     })

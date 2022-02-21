@@ -5,8 +5,6 @@ import { internalServerError } from '../helpers/errors.js';
 
 export const createTrip = (req, res) => {
     var newTrip = new Trip({
-        origin_id: req.body.origin_id,
-        destination_id: req.body.destination_id,
         bus_id: req.body.bus_id,
         tripdate: req.body.tripdate,
         price: req.body.price
@@ -19,7 +17,6 @@ export const createTrip = (req, res) => {
             trip
         });
     }).catch((err) =>  {
-        console.error(err);
         internalServerError(res);
     });    
 }
@@ -30,8 +27,6 @@ export const getTrips = (req, res) => {
             deleted_at: null,
         },
         include: [
-            { model: City, as: 'origin', attributes: ['id', 'name'] }, 
-            { model: City, as: 'destination', attributes: ['id', 'name'] },
             { model: Bus, as: 'bus', attributes: ['id', 'plate', 'model'] }
         ],
         attributes: ['id', 'tripdate', 'price']
@@ -63,8 +58,6 @@ export  const getTrip = async (req, res) => {
             deleted_at: null,
         },
         include: [
-            { model: City, as: 'origin', attributes: ['id', 'name'] }, 
-            { model: City, as: 'destination', attributes: ['id', 'name'] },
             { 
                 model: Bus, as: 'bus', attributes: ['id', 'plate', 'model'],
                 include: [{model: Seat}]
@@ -72,22 +65,10 @@ export  const getTrip = async (req, res) => {
         ],
         attributes: ['id', 'tripdate', 'price']
     }).then((trip) => {
-        var reserved_seats = Reservation.findAll({
-            where: {
-                trip_id: trip.id,
-                deleted_at: null,
-            },
-            attributes: ["seat_id"]
-        }).then((reserved_seats) => {
             res.status(200).send({
                 success: true,
                 trip,
-                reserved_seats
             })  
-        }).catch((err) => {
-
-        })
-        
     }).catch((err) => {
         console.error(err)
         if(err instanceof sequelize.EmptyResultError){
@@ -109,8 +90,6 @@ export const updateTrip = (req, res) => {
             deleted_at: null,
         }
     }).then((trip) => {
-        trip.origin_id = req.body.origin_id || trip.origin_id;
-        trip.destination_id = req.body.destination_id || trip.destination_id;
         trip.bus_id = req.body.bus_id || trip.bus_id;
         trip.tripdate = req.body.tripdate || trip.tripdate;
         trip.price = req.body.price || trip.price;
@@ -124,8 +103,6 @@ export const updateTrip = (req, res) => {
                     deleted_at: null,
                 },
                 include: [
-                    { model: City, as: 'origin', attributes: ['id', 'name'] }, 
-                    { model: City, as: 'destination', attributes: ['id', 'name'] },
                     { model: Bus, as: 'bus', attributes: ['id', 'plate', 'model'] }
                 ],
                 attributes: ['id', 'tripdate', 'price', 'updated_at']
@@ -167,8 +144,6 @@ export const deleteTrip = (req, res) => {
                     id: updatedTrip.id,
                 },
                 include: [
-                    { model: City, as: 'origin', attributes: ['id', 'name'] }, 
-                    { model: City, as: 'destination', attributes: ['id', 'name'] },
                     { model: Bus, as: 'bus', attributes: ['id', 'plate', 'model'] }
                 ],
                 attributes: ['id', 'tripdate', 'price', 'deleted_at']

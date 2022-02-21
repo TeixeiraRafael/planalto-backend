@@ -24,7 +24,7 @@ export const createUser = (req, res) => {
         enable_sms: req.body.enable_sms
     });
 
-    newUser.save()
+    newUser.save({omitNull: true})
     .then((user) => {
         user.password = undefined;
         user.deleted_at = undefined;
@@ -120,6 +120,8 @@ export const updateUser = (req, res) => {
         user.state = req.body.state || user.state;
         user.enable_sms = req.body.enable_sms || user.enable_sms
         user.updated_at = new Date().toISOString();
+        
+        console.log(user.birthdate, req.body.bithdate) 
         
         user.save().then((updatedUser) => {
             updatedUser.password = undefined;

@@ -14,10 +14,6 @@ export const Reservation = db.define('Reservation',
             type: 'BIGINT',
             allowNull: false
         },
-        trip_id: {
-            type: 'BIGINT',
-            allowNull: false,
-        },
         seat_id: {
             type: 'BIGINT',
             allowNull: false,
