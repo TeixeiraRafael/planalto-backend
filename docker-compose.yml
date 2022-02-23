@@ -1,14 +1,17 @@
 services:
   backend:
-    build: .
+    image: node:latest
     ports:
       - "5000:5000"
     volumes:
-      - ./app:/usr/app/
+      - ./app:/usr/src
     links:
       - db
     networks:
       - backend-network
+    working_dir: /usr/src
+    command: bash -c "npm install && npm start"
+
   
   pg-admin:
     image: dpage/pgadmin4

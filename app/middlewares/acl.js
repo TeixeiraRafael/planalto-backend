@@ -64,6 +64,10 @@ const managerUser = (req, res, next) => {
         return false;
     })
     .catch((err) => {
+        if(err instanceof sequelize.EmptyResultError){
+            deletedUser(res);
+            return false;
+        }
         internalServerError(res);
         return false;
     });  

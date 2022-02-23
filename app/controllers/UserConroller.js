@@ -90,6 +90,14 @@ export const getAll = (req, res, next) => {
         return true;
     })
     .catch((err) => {
+        console.log(err)
+        if(err instanceof sequelize.EmptyResultError){
+            res.status(402).send({
+                success: false,
+                message: "User not found"
+            })
+            return false;
+        }
         internalServerError(res);
         return false;
     })
