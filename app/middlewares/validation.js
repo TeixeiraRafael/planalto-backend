@@ -1,4 +1,4 @@
-import { registerValidator, userUpdateValidator } from "./validators/user.js"
+import { registerValidator, userUpdateValidator, updatePassword } from "./validators/user.js"
 import { loginValidator, refreshValidator} from "./validators/auth.js"
 import { createCityValidator, updateCityValidator } from "./validators/city.js"
 import { createBusValidator, updateBusValidator } from "./validators/bus.js"
@@ -10,7 +10,8 @@ import {paymentValidator } from "./validators/payment.js"
 
 export const user = {
     registerValidator,
-    userUpdateValidator
+    userUpdateValidator,
+    updatePassword
 }
 
 export const auth = {

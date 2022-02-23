@@ -104,14 +104,17 @@ export const getAll = (req, res, next) => {
 }
 
 export const updateUser = (req, res) => {
-    var query = {
+    console.log(req.params)
+
+    var user = User.findOne({
         where: {
             id: req.params.id,
             deleted_at: null
-        }
-    };
-    var user = User.findOne({query, include: Role})
+        },
+        include: Role
+    })
     .then((user) => {
+        console.log(req.params.id, user.id)
         user.name = req.body.name || user.name;
         user.email = req.body.email || user.email;
         user.document = req.body.document || user.document;
@@ -175,4 +178,51 @@ export const deleteUser = (req, res) => {
         return false;
     })
 }
+
+export const updatePassword = (req, res, next) => {
+    var query = {
+        where: {
+            id: req.params.id,
+            deleted_at: null
+        }
+    };
+    var user = User.findOne({
+        where: {
+            id: req.params.id,
+            deleted_at: null
+        },
+        include: Role
+    })
+    .then((user) => {
+        const old_password = req.body.old_password
+        const valid = bcrypt.compareSync(req.body.old_password, user.password);
+
+        if(valid) {
+            var hashed_password = bcrypt.hashSync(req.body.password, 10);
+            user.password = hashed_password;
+            user.updated_at = new Date().toISOString();           
+            user.save().then((updatedUser) => {
+                updatedUser.password = undefined;
+                updatedUser.created_at = undefined;
+                updatedUser.deleted_at = undefined;
+                res.status(200).send({ success: true, user: updatedUser });
+            }).catch((error) => {
+                res.status(501).send({ success: true, message: "Failed to update user data" });
+            })
+        } else {
+            res.status(401).send({ success: false, message: "Invalid password" });
+        }
+    }).catch((err) => {
+        if(err instanceof sequelize.EmptyResultError){
+            res.status(402).send({
+                success: false,
+                message: "User not found"
+            })
+            return false;
+        }
+        internalServerError(res);
+        return false;
+    })
+}
+
 export default createUser;

@@ -62,3 +62,22 @@ export const userUpdateValidator = (req, res, next) => {
         }
     });
 }
+
+export const updatePassword = (req, res, next) => {
+    const rules = {
+        "old_password": "string|required",
+        "password" : "string|required|confirmed"
+    }
+    
+    validator(req.body, rules, {}, (err, passed) => {
+        if(passed) {
+            next();
+        }else{
+            res.status(412).send({
+                success: false,
+                message: "Validation failed",
+                errors: err.errors
+            })
+        }
+    });
+}
