@@ -1,7 +1,22 @@
 import  bcrypt from 'bcrypt';
 import sequelize from 'sequelize';
+import nodemailer from 'nodemailer';
+
 import { internalServerError } from '../helpers/errors.js';
 import { User, Role } from '../models/index.js';
+
+const transporter = nodemailer.createTransport({
+        host: process.env.EMAIL_HOST,
+        port: process.env.EMAIL_PORT,
+        secure: false,
+        ignoreTLS: true,
+        auth: {
+            user: process.env.EMAIL_ADDRESS,
+            pass: process.env.EMAIL_PASSWORD
+        }
+    }
+);
+
 
 export const createUser = (req, res) => {
     var hash_password = bcrypt.hashSync(req.body.password, 10);
@@ -153,13 +168,13 @@ export const updateUser = (req, res) => {
 }
 
 export const deleteUser = (req, res) => {
-    var query = {
+    
+    var user = User.findOne({
         where: {
             id: req.params.id,
             deleted_at: null
         }
-    };
-    var user = User.findOne({query})
+    })
     .then((user) => {
         user.deleted_at = new Date().toISOString();
 
@@ -223,6 +238,56 @@ export const updatePassword = (req, res, next) => {
         internalServerError(res);
         return false;
     })
+}
+
+export const resetPassword = (req, res) => {
+
+    const user = User.findOne({
+        where: {
+            "email": req.body.email,
+            "deleted_at": null
+        }
+    })
+    .then((user) => {
+        const new_password = (Math.random() + 1).toString(36).substring(7);
+        var hashed_password = bcrypt.hashSync(new_password, 10);
+        user.password = hashed_password;
+        user.updated_at = new Date().toISOString();           
+        user.save().then((updatedUser) => {
+            let mail = transporter.sendMail({
+                from: '"Contato Planalto" <contato@planaltosoftware.tech>',
+                to: updatedUser.email,
+                subject: "Password Reset Request",
+                text: "Hello, \n\nuse this new password to login: " + new_password, 
+                html: "Hello <br><br>use this new password to login: <b>" + new_password + "</b>",
+            }).then((info) => {
+                res.status(200).send({
+                    success: true,
+                    message: "Reset password requested",
+                    info
+                })
+            }).catch((err) => {
+                res.status(500).send({
+                    success: false,
+                    err
+                })
+            });
+        }).catch((err) => {
+            console.log(err)
+            res.status(501).send({ success: true, message: "Failed to update user data" });
+        })        
+    })
+    .catch((err) => {
+        if(err instanceof sequelize.EmptyResultError) {
+            res.status(402).send({
+                success: false,
+                message: "The informed email is not registered."
+            });
+            return false;
+        }
+        internalServerError(res);
+        return false;
+    });
 }
 
 export default createUser;

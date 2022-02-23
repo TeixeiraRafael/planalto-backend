@@ -68,7 +68,25 @@ export const updatePassword = (req, res, next) => {
         "old_password": "string|required",
         "password" : "string|required|confirmed"
     }
-    
+
+    validator(req.body, rules, {}, (err, passed) => {
+        if(passed) {
+            next();
+        }else{
+            res.status(412).send({
+                success: false,
+                message: "Validation failed",
+                errors: err.errors
+            })
+        }
+    });
+}
+
+export const resetPassword = (req, res, next) => {
+    const rules = {
+        "email": "email|required",
+    }
+
     validator(req.body, rules, {}, (err, passed) => {
         if(passed) {
             next();

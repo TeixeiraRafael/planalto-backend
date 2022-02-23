@@ -1,17 +1,18 @@
-import { registerValidator, userUpdateValidator, updatePassword } from "./validators/user.js"
+import { registerValidator, userUpdateValidator, updatePassword, resetPassword } from "./validators/user.js"
 import { loginValidator, refreshValidator} from "./validators/auth.js"
 import { createCityValidator, updateCityValidator } from "./validators/city.js"
 import { createBusValidator, updateBusValidator } from "./validators/bus.js"
 import { createSeatValidator, updateSeatValidator, busExists } from "./validators/seat.js"
 import { validOrigin, validDestination, createTripValidator, updateTripValidator } from './validators/trip.js'
 import { createReservationValidator, updateReservationValidator, tripExists, seatExists, reservationOwner } from "./validators/reservation.js"
-import {paymentValidator } from "./validators/payment.js"
+import { paymentValidator } from "./validators/payment.js"
 
 
 export const user = {
     registerValidator,
     userUpdateValidator,
-    updatePassword
+    updatePassword,
+    resetPassword
 }
 
 export const auth = {
