@@ -102,7 +102,6 @@ export const reservationOwner = (req, res, next) => {
     var _reservation = Reservation.findOne({
         where: {
             id: req.params.id,
-            deleted_at: null,
         }
     }).then((reservation) => {
         if(reservation.user_id == req.user_id) {

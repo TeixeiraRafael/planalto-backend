@@ -20,7 +20,7 @@ export const Reservation = db.define('Reservation',
         },
         seat_id: {
             type: 'BIGINT',
-            allowNull: false,
+            allowNull: true,
         },
         transaction_id: {
             type: DataTypes.STRING(15),

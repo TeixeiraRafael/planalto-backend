@@ -2,6 +2,7 @@ import { Reservation, User, City, Trip } from '../models/index.js'
 
 import sequelize from 'sequelize';
 import mercadopago from 'mercadopago';
+import { internalServerError } from '../helpers/errors.js';
 
 export const createReservation = (req, res) => {
     var checkReservation = Reservation.findAll({
@@ -22,7 +23,7 @@ export const createReservation = (req, res) => {
                 user_id: req.user_id,
                 trip_id: req.body.trip_id,
                 seat_id: req.body.seat_id,
-                approved: false
+                approved: true
             });
             reservation.save()
             .then((_reservation) => {
@@ -30,6 +31,7 @@ export const createReservation = (req, res) => {
                 .then((paymentData) => {
                     var pag = mercadopago.payment.create(paymentData)
                     .then((data) => {
+                        console.log(data)
                         const qr_code_base64 = data.response.point_of_interaction.transaction_data.qr_code_base64
                         const copia_e_cola = data.response.point_of_interaction.transaction_data.qr_code
                         _reservation.transaction_id = data.body.id
@@ -44,7 +46,8 @@ export const createReservation = (req, res) => {
                         })
                     })
                     .catch((err) => {
-                        console.error(err);
+                        //console.error(err);
+                        internalServerError(res);
                     });
                 });
             })
@@ -169,7 +172,6 @@ const getPaymentData = (req, reservation) => {
                     transaction_amount: trip.price,
                     description: 'Trip from ' + trip.origin.name + ' to ' + trip.destination.name + ' on ' + trip.tripdate,
                     payment_method_id: 'pix',
-                    notification_url: "http://" +  process.env.SERVER_HOST + ":5000/payment/confirmation/" + reservation.id,
                     payer: {
                         email: user.email,
                         first_name: user.name,
@@ -187,7 +189,6 @@ const getPaymentData = (req, reservation) => {
                         }
                     }
                 }
-    
                 resolve(payment_data);
             }).catch((err) => {
                 reject(err)
@@ -198,4 +199,30 @@ const getPaymentData = (req, reservation) => {
         });
     })
     
+}
+
+export const getUserReservations = (req, res) => {
+    var reservations = Reservation.findAll({
+        where: {
+            user_id: req.user_id,
+        }
+    })
+    .then((reservations) => {
+        res.status(200).send({
+            success: true,
+            reservations
+        })
+        return true;
+    })
+    .catch((err) => {
+        if(err instanceof sequelize.EmptyResultError){
+            res.status(404).send({
+                success: false,
+                message: "No reservations found."
+            });
+            return false;
+        }
+        console.log(err)
+        internalServerError(res);
+    });
 }

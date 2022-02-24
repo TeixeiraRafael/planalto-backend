@@ -2,7 +2,7 @@ import express from 'express';
 
 import { acl } from '../middlewares/acl.js'
 import { reservation } from '../middlewares/validation.js';
-import { createReservation, getReservations, getReservation, deleteReservation } from '../controllers/ReservationController.js';
+import { createReservation, getReservations, getReservation, deleteReservation, getUserReservations } from '../controllers/ReservationController.js';
 
 export const reservationRoutes = express.Router();
 
@@ -35,6 +35,15 @@ reservationRoutes.delete(
     reservation.reservationOwner,
     deleteReservation
 )
+
+reservationRoutes.post(
+    "/reservation/getByUser",
+    acl.loggedIn,
+    getUserReservations
+)
+
+reservationRoutes;
+
 export default reservationRoutes;
 
 
