@@ -85,7 +85,16 @@ export  const getTrip = async (req, res) => {
                 reserved_seats
             })  
         }).catch((err) => {
-
+            if(err instanceof sequelize.EmptyResultError) {
+                res.status(200).send({
+                    success: true,
+                    trip,
+                    reserved_seats: []
+                })
+                return true;
+            };
+            internalServerError(res);
+            return false;
         })
         
     }).catch((err) => {
