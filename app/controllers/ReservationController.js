@@ -31,7 +31,6 @@ export const createReservation = (req, res) => {
                 .then((paymentData) => {
                     var pag = mercadopago.payment.create(paymentData)
                     .then((data) => {
-                        console.log(data)
                         const qr_code_base64 = data.response.point_of_interaction.transaction_data.qr_code_base64
                         const copia_e_cola = data.response.point_of_interaction.transaction_data.qr_code
                         _reservation.transaction_id = data.body.id
@@ -46,7 +45,6 @@ export const createReservation = (req, res) => {
                         })
                     })
                     .catch((err) => {
-                        //console.error(err);
                         internalServerError(res);
                     });
                 });
